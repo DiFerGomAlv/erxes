@@ -29,13 +29,7 @@ type Props = {
 };
 
 class List extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props);
-
-    this.renderRow = this.renderRow.bind(this);
-  }
-
-  renderRow() {
+  renderRow = () => {
     const { products, remove, save } = this.props;
 
     return products.map(product => (
@@ -57,11 +51,13 @@ class List extends React.Component<Props> {
       </Button>
     );
 
+    const modalContent = props => <Form {...props} save={save} />;
+
     const actionBarRight = (
       <ModalTrigger
         title="Add Product / Service"
         trigger={trigger}
-        content={props => <Form {...props} save={save} />}
+        content={modalContent}
       />
     );
 

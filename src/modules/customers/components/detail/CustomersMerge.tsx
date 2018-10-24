@@ -44,14 +44,9 @@ class CustomersMerge extends React.Component<Props, State> {
     this.state = {
       selectedValues: {}
     };
-
-    this.renderCustomer = this.renderCustomer.bind(this);
-    this.renderLinks = this.renderLinks.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.save = this.save.bind(this);
   }
 
-  save(e: React.FormEvent) {
+  save = (e: React.FormEvent) => {
     e.preventDefault();
     const { objects } = this.props;
     const selectedValues = { ...this.state.selectedValues };
@@ -72,11 +67,17 @@ class CustomersMerge extends React.Component<Props, State> {
     });
   }
 
-  handleChange(type: string, key: string, value: string | ICustomerLinks) {
+  handleChange = (type: string, key: string, value: string | ICustomerLinks) => {
     const selectedValues = { ...this.state.selectedValues };
 
     if (type === 'add') {
       selectedValues[key] = value;
+
+      if (key === 'link') {
+        const links = { ...selectedValues.links };
+
+        selectedValues[key] = links;
+      }
     } else {
       delete selectedValues[key];
     }
@@ -84,7 +85,7 @@ class CustomersMerge extends React.Component<Props, State> {
     this.setState({ selectedValues });
   }
 
-  renderCustomer(customer: ICustomerDoc, icon: string) {
+  renderCustomer = (customer: ICustomerDoc, icon: string) => {
     const properties = CUSTOMER_BASIC_INFO.ALL.concat(CUSTOMER_DATAS.ALL);
 
     return (
@@ -111,12 +112,7 @@ class CustomersMerge extends React.Component<Props, State> {
 
   renderCustomerProperties(key: string, value: string, icon: string) {
     return (
-      <li
-        key={key}
-        onClick={() => {
-          this.handleChange(icon, key, value);
-        }}
-      >
+      <li key={key} onClick={this.handleChange.bind(this, icon, key, value)}>
         {this.renderTitle(key)}
         {this.renderValue(key, value)}
 
@@ -209,7 +205,7 @@ class CustomersMerge extends React.Component<Props, State> {
     );
   }
 
-  renderLinks(data: ICustomerLinks, icon: string) {
+  renderLinks = (data: ICustomerLinks, icon: string) => {
     const { selectedValues } = this.state;
 
     return CUSTOMER_LINKS.ALL.map(info => {
@@ -223,11 +219,9 @@ class CustomersMerge extends React.Component<Props, State> {
       return (
         <li
           key={field}
-          onClick={() => {
-            const links = { ...selectedValues.links, [field]: value };
-
-            return this.handleChange(icon, `links`, links);
-          }}
+          onClick={this.handleChange.bind(this, icon, `links`, {
+            [field]: value
+          })}
         >
           <InfoTitle>{info.label}:</InfoTitle>
           <InfoDetail>{value}</InfoDetail>
@@ -239,7 +233,7 @@ class CustomersMerge extends React.Component<Props, State> {
 
   render() {
     const { selectedValues } = this.state;
-    const { objects } = this.props;
+    const { objects, closeModal } = this.props;
     const [customer1, customer2] = objects;
 
     return (
@@ -257,11 +251,7 @@ class CustomersMerge extends React.Component<Props, State> {
         </Columns>
 
         <ModalFooter>
-          <Button
-            btnStyle="simple"
-            onClick={() => this.props.closeModal()}
-            icon="cancel-1"
-          >
+          <Button btnStyle="simple" onClick={closeModal} icon="cancel-1">
             Cancel
           </Button>
           <Button type="submit" btnStyle="success" icon="checked-1">

@@ -82,8 +82,8 @@ class KnowledgeForm extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    let code = '',
-      color = colors.colorPrimary;
+    let code = '';
+    let color = colors.colorPrimary;
 
     // showed install code automatically in edit mode
     if (props.topic) {
@@ -96,18 +96,13 @@ class KnowledgeForm extends React.Component<Props, State> {
       code,
       color
     };
-
-    this.handleBrandChange = this.handleBrandChange.bind(this);
-    this.onColorChange = this.onColorChange.bind(this);
-    this.save = this.save.bind(this);
-    this.remove = this.remove.bind(this);
   }
 
-  onColorChange(e) {
+  onColorChange = (e) => {
     this.setState({ color: e.hex });
   }
 
-  save(e) {
+  save = (e) => {
     e.preventDefault();
 
     this.props.save(
@@ -117,7 +112,7 @@ class KnowledgeForm extends React.Component<Props, State> {
     );
   }
 
-  remove() {
+  remove = () => {
     const { remove, topic } = this.props;
 
     if (remove) {
@@ -127,16 +122,15 @@ class KnowledgeForm extends React.Component<Props, State> {
 
   renderInstallCode() {
     if (this.props.topic && this.props.topic._id) {
+      const onCopy = () => this.setState({ copied: true });
+
       return (
         <FormGroup>
           <ControlLabel>Install code</ControlLabel>
           <MarkdownWrapper>
             <ReactMarkdown source={this.state.code} />
             {this.state.code ? (
-              <CopyToClipboard
-                text={this.state.code}
-                onCopy={() => this.setState({ copied: true })}
-              >
+              <CopyToClipboard text={this.state.code} onCopy={onCopy}>
                 <Button size="small" btnStyle="primary" icon="copy">
                   {this.state.copied ? 'Copied' : 'Copy to clipboard'}
                 </Button>
@@ -152,7 +146,7 @@ class KnowledgeForm extends React.Component<Props, State> {
     }
   }
 
-  handleBrandChange() {
+  handleBrandChange = () => {
     if (this.props.topic && this.props.topic._id) {
       const code = KnowledgeForm.getInstallCode(this.props.topic._id);
       this.setState({ code, copied: false });

@@ -4,10 +4,12 @@ import {
   FormGroup
 } from 'modules/common/components';
 import { FlexItem, LeftItem } from 'modules/common/components/step/styles';
+import { __ } from 'modules/common/utils';
 import { IBrand } from 'modules/settings/brands/types';
 import * as React from 'react';
 import Toggle from 'react-toggle';
 import { SelectBrand } from '../..';
+import { ITopic } from '../../../../../knowledgeBase/types';
 
 type Props = {
   onChange: (
@@ -17,43 +19,49 @@ type Props = {
   brandId?: string;
   brands?: IBrand[];
   notifyCustomer?: boolean;
-  showFaq?: boolean;
+  topics?: ITopic[];
+  topicId?: string;
 };
 
 class Options extends React.Component<Props> {
-  constructor(props: Props) {
-    super(props);
-
-    this.onChangeFunction = this.onChangeFunction.bind(this);
-  }
-
-  onChangeFunction(name, value) {
+  onChangeFunction = (name, value) => {
     this.setState({ [name]: value });
     this.props.onChange(name, value);
   }
 
   render() {
+    const brandOnChange = e => this.onChangeFunction('brandId', e.target.value);
+    const notifyCustomerChange = e =>
+      this.onChangeFunction('notifyCustomer', e.target.checked);
+    const onTopicChange = e =>
+      this.onChangeFunction('knowledgeBaseTopicId', e.target.value);
+    const { topics, topicId } = this.props;
+
     return (
       <FlexItem>
         <LeftItem>
           <SelectBrand
             brands={this.props.brands || []}
             defaultValue={this.props.brandId}
-            onChange={e => this.onChangeFunction('brandId', e.target.value)}
+            onChange={brandOnChange}
           />
 
           <FormGroup>
-            <ControlLabel>Show FAQ</ControlLabel>
+            <ControlLabel>Knowledge Base Topic</ControlLabel>
 
             <FormControl
-              checked={this.props.showFaq || false}
-              componentClass="checkbox"
-              onChange={(e: React.FormEvent<HTMLElement>) => {
-                const target = e.currentTarget as HTMLInputElement;
-
-                return this.onChangeFunction('showFaq', target.checked);
-              }}
-            />
+              componentClass="select"
+              placeholder={__('Select Topic')}
+              onChange={onTopicChange}
+              defaultValue={topicId}
+            >
+              <option />
+              {(topics || []).map(topic => (
+                <option key={topic._id} value={topic._id}>
+                  {topic.title}
+                </option>
+              ))}
+            </FormControl>
           </FormGroup>
 
           <FormGroup>
@@ -62,9 +70,7 @@ class Options extends React.Component<Props> {
               <Toggle
                 className="wide"
                 checked={this.props.notifyCustomer}
-                onChange={e =>
-                  this.onChangeFunction('notifyCustomer', e.target.checked)
-                }
+                onChange={notifyCustomerChange}
                 icons={{
                   checked: <span>Yes</span>,
                   unchecked: <span>No</span>

@@ -51,12 +51,9 @@ class UserDetails extends React.Component<Props, State> {
     super(props);
 
     this.state = { currentTab: 'conversation' };
-
-    this.renderTabContent = this.renderTabContent.bind(this);
-    this.onTabClick = this.onTabClick.bind(this);
   }
 
-  onTabClick(currentTab) {
+  onTabClick = (currentTab) => {
     this.setState({ currentTab });
   }
 
@@ -95,7 +92,7 @@ class UserDetails extends React.Component<Props, State> {
     );
   }
 
-  renderTabContent() {
+  renderTabContent = () => {
     const { currentTab } = this.state;
 
     const {
@@ -150,6 +147,9 @@ class UserDetails extends React.Component<Props, State> {
       { title: details.fullName || 'N/A' }
     ];
 
+    const conversationClick = () => this.onTabClick('conversation');
+    const notesClick = () => this.onTabClick('notes');
+
     const content = (
       <div>
         <WhiteBoxRoot>
@@ -165,13 +165,13 @@ class UserDetails extends React.Component<Props, State> {
         <Tabs grayBorder={true}>
           <TabTitle
             className={currentTab === 'conversation' ? 'active' : ''}
-            onClick={() => this.onTabClick('conversation')}
+            onClick={conversationClick}
           >
             {__('Conversation')}
           </TabTitle>
           <TabTitle
             className={currentTab === 'notes' ? 'active' : ''}
-            onClick={() => this.onTabClick('notes')}
+            onClick={notesClick}
           >
             {__('Notes')}
           </TabTitle>

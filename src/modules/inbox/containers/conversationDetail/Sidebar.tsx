@@ -36,7 +36,6 @@ class Sidebar extends React.Component<Props, State> {
     super(props);
 
     this.state = { customer: {} as ICustomer, loading: false };
-    this.toggleSection = this.toggleSection.bind(this);
   }
 
   componentDidMount() {
@@ -76,13 +75,13 @@ class Sidebar extends React.Component<Props, State> {
         }
       })
       .catch(error => {
-        console.log(error.message); // eslint-disable-line
+        console.log(error.message); // tslint:disable-line
       });
 
     return;
   }
 
-  toggleSection({ name, isOpen }: { name: string; isOpen: boolean }) {
+  toggleSection = ({ name, isOpen }: { name: string; isOpen: boolean }) => {
     const customerId = this.props.conversation.customerId;
     const config = getConfig();
 

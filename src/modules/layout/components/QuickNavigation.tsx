@@ -15,7 +15,7 @@ import {
 } from 'modules/settings/profile/containers';
 import * as React from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import { Link, NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { UserHelper } from '../styles';
 
@@ -41,10 +41,6 @@ const NavItem = styled.div`
 
   > a {
     color: ${colors.colorCoreDarkGray};
-
-    &.active {
-      color: ${colors.colorSecondary};
-    }
   }
 `;
 
@@ -55,15 +51,21 @@ const QuickNavigation = ({
   logout: () => void;
   currentUser: IUser;
 }) => {
+  const passContent = props => <ChangePassword {...props} />;
+  const signatureContent = props => <Signature {...props} />;
+  const notificationContent = props => (
+    <NotificationSettings currentUser={currentUser} {...props} />
+  );
+
   return (
     <nav>
       <NavItem>
         <Widget />
       </NavItem>
       <NavItem>
-        <NavLink to="/settings" activeClassName="active">
+        <Link to="/settings">
           <Icon icon="settings" size={18} />
-        </NavLink>
+        </Link>
       </NavItem>
       <NavItem>
         <Dropdown id="dropdown-user" pullRight={true}>
@@ -92,7 +94,7 @@ const QuickNavigation = ({
                   <a>{__('Change Password')}</a>
                 </li>
               }
-              content={props => <ChangePassword {...props} />}
+              content={passContent}
             />
 
             <ModalTrigger
@@ -102,7 +104,7 @@ const QuickNavigation = ({
                   <a>{__('Email signatures')}</a>
                 </li>
               }
-              content={props => <Signature {...props} />}
+              content={signatureContent}
             />
 
             <ModalTrigger
@@ -112,9 +114,7 @@ const QuickNavigation = ({
                   <a>{__('Notification settings')}</a>
                 </li>
               }
-              content={props => (
-                <NotificationSettings currentUser={currentUser} {...props} />
-              )}
+              content={notificationContent}
             />
 
             <MenuItem divider={true} />

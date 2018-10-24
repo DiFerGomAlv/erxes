@@ -19,13 +19,7 @@ type Props = {
 };
 
 class Boards extends React.Component<Props, {}> {
-  constructor(props) {
-    super(props);
-
-    this.renderItems = this.renderItems.bind(this);
-  }
-
-  renderItems() {
+  renderItems = () => {
     const { boards, remove, save, currentBoardId } = this.props;
 
     return boards.map(board => (
@@ -55,17 +49,15 @@ class Boards extends React.Component<Props, {}> {
       </HelperButtons>
     );
 
+    const content = props => {
+      return this.renderBoardForm({ ...props, save });
+    };
+
     return (
       <Header uppercase={true}>
         {__('Board')}
 
-        <ModalTrigger
-          title="New Board"
-          trigger={addBoard}
-          content={props => {
-            return this.renderBoardForm({ ...props, save });
-          }}
-        />
+        <ModalTrigger title="New Board" trigger={addBoard} content={content} />
       </Header>
     );
   }

@@ -34,16 +34,7 @@ type Props = {
 };
 
 class TwitterMessage extends React.Component<Props, {}> {
-  constructor(props) {
-    super(props);
-
-    this.renderReply = this.renderReply.bind(this);
-    this.renderTweetLink = this.renderTweetLink.bind(this);
-    this.renderUserLink = this.renderUserLink.bind(this);
-    this.favoriteTweet = this.favoriteTweet.bind(this);
-  }
-
-  favoriteTweet() {
+  favoriteTweet = () => {
     const { message, favoriteTweet, integrationId } = this.props;
     const twitterData = message.twitterData;
 
@@ -59,7 +50,7 @@ class TwitterMessage extends React.Component<Props, {}> {
     return favoriteTweet(tweet);
   }
 
-  renderUserLink(username?: string, fullName?: string, customer?: ICustomer) {
+  renderUserLink = (username?: string, fullName?: string, customer?: ICustomer) => {
     if (!username) {
       return <div>{customer && customer.firstName}</div>;
     }
@@ -71,7 +62,7 @@ class TwitterMessage extends React.Component<Props, {}> {
     );
   }
 
-  renderTweetLink() {
+  renderTweetLink = () => {
     const { message } = this.props;
 
     if (!message.twitterData) {
@@ -95,6 +86,36 @@ class TwitterMessage extends React.Component<Props, {}> {
     const { favorited, retweeted } = twitterData;
     const { integrationId, retweet, replyTweet, tweet, message } = this.props;
 
+    const replyContent = props => (
+      <ModalAction
+        type="reply"
+        integrationId={integrationId}
+        replyTweet={replyTweet}
+        parentMessage={message}
+        {...props}
+      />
+    );
+
+    const retweetContent = props => (
+      <ModalAction
+        type="retweet"
+        integrationId={integrationId}
+        retweet={retweet}
+        parentMessage={message}
+        {...props}
+      />
+    );
+
+    const twitterContent = props => (
+      <ModalAction
+        type="quote"
+        integrationId={integrationId}
+        tweet={tweet}
+        parentMessage={message}
+        {...props}
+      />
+    );
+
     return (
       <Counts root={inReplyStatus}>
         <ModalTrigger
@@ -104,15 +125,7 @@ class TwitterMessage extends React.Component<Props, {}> {
               <Icon icon="chat" /> Reply • {twitterData.reply_count || 0}
             </Count>
           }
-          content={props => (
-            <ModalAction
-              type="reply"
-              integrationId={integrationId}
-              replyTweet={replyTweet}
-              parentMessage={message}
-              {...props}
-            />
-          )}
+          content={replyContent}
         />
 
         <ModalTrigger
@@ -122,15 +135,7 @@ class TwitterMessage extends React.Component<Props, {}> {
               <Icon icon="repeat" /> Retweet • {twitterData.retweet_count || 0}
             </Count>
           }
-          content={props => (
-            <ModalAction
-              type="retweet"
-              integrationId={integrationId}
-              retweet={retweet}
-              parentMessage={message}
-              {...props}
-            />
-          )}
+          content={retweetContent}
         />
 
         <Count favorited={favorited} onClick={this.favoriteTweet}>
@@ -144,21 +149,13 @@ class TwitterMessage extends React.Component<Props, {}> {
               <Icon icon="rightquote" /> Quote • {twitterData.quote_count || 0}
             </Count>
           }
-          content={props => (
-            <ModalAction
-              type="quote"
-              integrationId={integrationId}
-              tweet={tweet}
-              parentMessage={message}
-              {...props}
-            />
-          )}
+          content={twitterContent}
         />
       </Counts>
     );
   }
 
-  renderReply(twitterData: ITwitterData, inReplyStatus: boolean) {
+  renderReply = (twitterData: ITwitterData, inReplyStatus: boolean) => {
     if (inReplyStatus) {
       return null;
     }

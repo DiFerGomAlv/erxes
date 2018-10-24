@@ -50,13 +50,6 @@ class CustomerForm extends React.Component<Props, State> {
       users: [],
       avatar: customer.avatar
     };
-
-    this.renderFormGroup = this.renderFormGroup.bind(this);
-    this.action = this.action.bind(this);
-    this.handleUserSearch = this.handleUserSearch.bind(this);
-    this.onEmailChange = this.onEmailChange.bind(this);
-    this.onPhoneChange = this.onPhoneChange.bind(this);
-    this.onAvatarUpload = this.onAvatarUpload.bind(this);
   }
 
   componentDidMount() {
@@ -71,7 +64,7 @@ class CustomerForm extends React.Component<Props, State> {
     return (document.getElementById(id) as HTMLInputElement).value;
   }
 
-  action(e) {
+  action = (e) => {
     const { phones, emails, primaryPhone, primaryEmail, avatar } = this.state;
 
     e.preventDefault();
@@ -108,7 +101,7 @@ class CustomerForm extends React.Component<Props, State> {
     this.props.closeModal();
   }
 
-  onAvatarUpload(url) {
+  onAvatarUpload = (url) => {
     this.setState({ avatar: url });
   }
 
@@ -126,7 +119,7 @@ class CustomerForm extends React.Component<Props, State> {
     }));
   }
 
-  handleUserSearch(value) {
+  handleUserSearch = (value) => {
     if (value) {
       searchUser(value, users => this.setState({ users }));
     }
@@ -164,7 +157,7 @@ class CustomerForm extends React.Component<Props, State> {
     return [];
   }
 
-  renderFormGroup(label, props) {
+  renderFormGroup = (label, props) => {
     return (
       <FormGroup>
         <ControlLabel>{label}</ControlLabel>
@@ -173,12 +166,18 @@ class CustomerForm extends React.Component<Props, State> {
     );
   }
 
-  onEmailChange({ options, selectedOption }) {
+  onEmailChange = ({ options, selectedOption }) => {
     this.setState({ emails: options, primaryEmail: selectedOption });
   }
 
-  onPhoneChange({ options, selectedOption }) {
+  onPhoneChange = ({ options, selectedOption }) => {
     this.setState({ phones: options, primaryPhone: selectedOption });
+  }
+
+  onOwnerChange = (selectedOption) => {
+    this.setState({
+      ownerId: selectedOption ? selectedOption.value : null
+    });
   }
 
   render() {
@@ -188,8 +187,12 @@ class CustomerForm extends React.Component<Props, State> {
     const customer = this.props.customer || ({} as ICustomer);
     const { links = {}, primaryEmail, primaryPhone } = customer;
 
+    const filteroptions = options => {
+      return options;
+    };
+
     return (
-      <form onSubmit={e => this.action(e)}>
+      <form onSubmit={this.action}>
         <AvatarUpload
           avatar={customer.avatar}
           onAvatarUpload={this.onAvatarUpload}
@@ -210,7 +213,7 @@ class CustomerForm extends React.Component<Props, State> {
                 options={this.getEmailsOptions(customer)}
                 placeholder="Primary email"
                 buttonText="Add Email"
-                onChange={obj => this.onEmailChange(obj)}
+                onChange={this.onEmailChange}
               />
             </FormGroup>
 
@@ -230,14 +233,10 @@ class CustomerForm extends React.Component<Props, State> {
               <ControlLabel>Owner</ControlLabel>
               <Select
                 placeholder={__('Search')}
-                onFocus={() => this.handleUserSearch(' ')}
+                onFocus={this.handleUserSearch.bind(this, ' ')}
                 onInputChange={this.handleUserSearch}
-                filterOptions={options => options}
-                onChange={selectedOption => {
-                  this.setState({
-                    ownerId: selectedOption ? selectedOption.value : null
-                  });
-                }}
+                filterOptions={filteroptions}
+                onChange={this.onOwnerChange}
                 value={this.state.ownerId}
                 options={this.generateUserParams(users)}
               />
@@ -268,7 +267,7 @@ class CustomerForm extends React.Component<Props, State> {
                 options={this.getPhonesOptions(customer)}
                 placeholder="Primary phone"
                 buttonText="Add Phone"
-                onChange={obj => this.onPhoneChange(obj)}
+                onChange={this.onPhoneChange}
               />
             </FormGroup>
 
@@ -358,11 +357,7 @@ class CustomerForm extends React.Component<Props, State> {
         </FormWrapper>
 
         <ModalFooter>
-          <Button
-            btnStyle="simple"
-            onClick={() => closeModal()}
-            icon="cancel-1"
-          >
+          <Button btnStyle="simple" onClick={closeModal} icon="cancel-1">
             Close
           </Button>
 

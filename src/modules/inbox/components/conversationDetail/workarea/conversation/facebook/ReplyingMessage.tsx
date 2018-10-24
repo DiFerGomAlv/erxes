@@ -28,13 +28,9 @@ class ReplyingMessage extends React.Component<Props, State> {
     this.state = {
       post: ''
     };
-
-    this.doAction = this.doAction.bind(this);
-    this.onContentChange = this.onContentChange.bind(this);
-    this.getContent = this.getContent.bind(this);
   }
 
-  onContentChange(e: React.FormEvent<HTMLElement>) {
+  onContentChange = (e: React.FormEvent<HTMLElement>) => {
     const postContent = (e.target as HTMLInputElement).value;
 
     this.setState({
@@ -42,13 +38,13 @@ class ReplyingMessage extends React.Component<Props, State> {
     });
   }
 
-  getContent() {
+  getContent = () => {
     const { currentUserName } = this.props;
 
     return `@${currentUserName} `;
   }
 
-  doAction(e: React.FormEvent) {
+  doAction = (e: React.FormEvent) => {
     e.preventDefault();
 
     const { replyPost, conversationId, commentId } = this.props;
@@ -80,9 +76,7 @@ class ReplyingMessage extends React.Component<Props, State> {
         <Footer>
           <Button
             btnStyle="simple"
-            onClick={() => {
-              this.props.closeModal();
-            }}
+            onClick={this.props.closeModal}
             icon="cancel-1"
           >
             Close

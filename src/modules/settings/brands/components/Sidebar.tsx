@@ -31,13 +31,7 @@ type Props = {
 };
 
 class Sidebar extends React.Component<Props, {}> {
-  constructor(props) {
-    super(props);
-
-    this.renderItems = this.renderItems.bind(this);
-  }
-
-  renderItems() {
+  renderItems = () => {
     const { brands, remove, save, currentBrandId } = this.props;
 
     return brands.map(brand => (
@@ -63,15 +57,13 @@ class Sidebar extends React.Component<Props, {}> {
       </HelperButtons>
     );
 
+    const content = props => <BrandForm {...props} save={save} />;
+
     return (
       <Header uppercase={true}>
         {__('Brands')}
 
-        <ModalTrigger
-          title="New Brand"
-          trigger={addBrand}
-          content={props => <BrandForm {...props} save={save} />}
-        />
+        <ModalTrigger title="New Brand" trigger={addBrand} content={content} />
       </Header>
     );
   }

@@ -24,13 +24,7 @@ type Props = {
 };
 
 class Row extends React.Component<Props, {}> {
-  constructor(props) {
-    super(props);
-
-    this.remove = this.remove.bind(this);
-  }
-
-  remove() {
+  remove = () => {
     confirm().then(() => {
       const { integration, remove } = this.props;
 
@@ -65,12 +59,10 @@ class Row extends React.Component<Props, {}> {
       </Button>
     );
 
+    const content = props => <Manage integration={integration} {...props} />;
+
     return (
-      <ModalTrigger
-        title="Install code"
-        trigger={trigger}
-        content={props => <Manage integration={integration} {...props} />}
-      />
+      <ModalTrigger title="Install code" trigger={trigger} content={content} />
     );
   }
 

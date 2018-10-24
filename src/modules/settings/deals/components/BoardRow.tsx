@@ -20,13 +20,7 @@ type Props = {
 class BoardRow extends React.Component<Props, {}> {
   private size;
 
-  constructor(props: Props) {
-    super(props);
-
-    this.remove = this.remove.bind(this);
-  }
-
-  remove() {
+  remove = () => {
     const { board } = this.props;
 
     this.props.remove(board._id);
@@ -43,12 +37,14 @@ class BoardRow extends React.Component<Props, {}> {
       </Button>
     );
 
+    const content = props => <BoardForm {...props} board={board} save={save} />;
+
     return (
       <ModalTrigger
         size={this.size}
         title="Edit"
         trigger={editTrigger}
-        content={props => <BoardForm {...props} board={board} save={save} />}
+        content={content}
       />
     );
   }

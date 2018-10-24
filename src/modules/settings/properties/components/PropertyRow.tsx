@@ -32,19 +32,13 @@ class PropertyRow extends React.Component<Props, State> {
     this.state = {
       collapse: true
     };
-
-    this.renderTable = this.renderTable.bind(this);
-    this.renderTableRow = this.renderTableRow.bind(this);
-    this.renderActionButtons = this.renderActionButtons.bind(this);
-    this.handleCollapse = this.handleCollapse.bind(this);
-    this.visibleHandler = this.visibleHandler.bind(this);
   }
 
-  handleCollapse() {
+  handleCollapse = () => {
     this.setState({ collapse: !this.state.collapse });
   }
 
-  visibleHandler(e, property) {
+  visibleHandler = (e, property) => {
     if (property.isDefinedByErxes) {
       return Alert.error(__('You cannot update this property'));
     }
@@ -54,10 +48,15 @@ class PropertyRow extends React.Component<Props, State> {
     return this.props.updatePropertyVisible({ _id: property._id, isVisible });
   }
 
-  renderActionButtons(data, remove, content) {
+  renderActionButtons = (data, remove, content) => {
     if (data.isDefinedByErxes) {
       return null;
     }
+
+    const onClick = () =>
+      confirm().then(() => {
+        remove({ _id: data._id });
+      });
 
     return (
       <ActionButtons>
@@ -66,21 +65,15 @@ class PropertyRow extends React.Component<Props, State> {
           trigger={<Button btnStyle="link" icon="edit" />}
           content={content}
         />
-        <Button
-          btnStyle="link"
-          icon="cancel-1"
-          onClick={() =>
-            confirm().then(() => {
-              remove({ _id: data._id });
-            })
-          }
-        />
+        <Button btnStyle="link" icon="cancel-1" onClick={onClick} />
       </ActionButtons>
     );
   }
 
-  renderTableRow(field) {
+  renderTableRow = (field) => {
     const { removeProperty, queryParams } = this.props;
+
+    const onChange = e => this.visibleHandler(e, field);
 
     return (
       <tr key={field._id}>
@@ -100,7 +93,7 @@ class PropertyRow extends React.Component<Props, State> {
               checked: <span>Yes</span>,
               unchecked: <span>No</span>
             }}
-            onChange={e => this.visibleHandler(e, field)}
+            onChange={onChange}
           />
         </td>
         <td>
@@ -112,7 +105,7 @@ class PropertyRow extends React.Component<Props, State> {
     );
   }
 
-  renderTable(fields) {
+  renderTable = (fields) => {
     if (fields.length === 0) {
       return (
         <EmptyState

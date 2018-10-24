@@ -35,13 +35,7 @@ type Props = {
 };
 
 class Sidebar extends React.Component<Props, {}> {
-  constructor(props: Props) {
-    super(props);
-
-    this.renderItems = this.renderItems.bind(this);
-  }
-
-  renderItems() {
+  renderItems = () => {
     const { channels, members, remove, save, currentChannelId } = this.props;
 
     return channels.map(channel => (
@@ -68,15 +62,17 @@ class Sidebar extends React.Component<Props, {}> {
       </HelperButtons>
     );
 
+    const content = props => (
+      <ChannelForm {...props} save={save} members={members} />
+    );
+
     return (
       <Header uppercase={true}>
         {__('Channels')}
         <ModalTrigger
           title="New Channel"
           trigger={addChannel}
-          content={props => (
-            <ChannelForm {...props} save={save} members={members} />
-          )}
+          content={content}
         />
       </Header>
     );
